@@ -5,14 +5,12 @@ import { InputComponent } from '../Components/InputComponent'
 import { ButtonComponent } from '../Components/ButtonComponent'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
-export function SignIn() {
-  const { navigate } = useNavigation<AuthNavigatorRoutesProps>()
+export function SignUp() {
+  const { goBack } = useNavigation()
 
-  function handleNewAccount() {
-    // TODO -> nao ta pegando a tipagem
-    navigate('signUp')
+  function handleGoBack() {
+    goBack()
   }
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -33,28 +31,24 @@ export function SignIn() {
         <Center>
           {' '}
           <Heading color={'gray.100'} fontSize={'xl'} mb={6}>
-            Acess your account
+            Create your account
           </Heading>
+          <InputComponent placeholder="Name" autoCapitalize="none" />
           <InputComponent
             placeholder="E-mail"
             keyboardType="email-address"
             autoCapitalize="none"
           />
           <InputComponent placeholder="Password" secureTextEntry />
-          <ButtonComponent title="Acess" />
+          <ButtonComponent title="Create and Acess" />
         </Center>
 
-        <Center mt={24}>
-          <Text color={'gray.100'} fontSize={'sm'} mb={3} fontFamily={'body'}>
-            {' '}
-            Dont have access yet?
-          </Text>
-          <ButtonComponent
-            title="Create an account"
-            variant={'outline'}
-            onPress={handleNewAccount}
-          />
-        </Center>
+        <ButtonComponent
+          mt={24}
+          title="Back to login"
+          variant={'outline'}
+          onPress={handleGoBack}
+        />
       </VStack>
     </ScrollView>
   )

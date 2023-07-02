@@ -3,21 +3,32 @@ import React from 'react'
 
 interface ButtonProps extends IButtonProps {
   title: string
+  variant?: 'solid' | 'outline'
 }
 
-export function ButtonComponent({ title, ...rest }: ButtonProps) {
+export function ButtonComponent({
+  title,
+  variant = 'solid',
+  ...rest
+}: ButtonProps) {
   return (
     <Button
       {...rest}
       w={'full'}
       h={14}
-      bg={'green.700'}
+      bg={variant === 'outline' ? 'transparent' : 'green.700'}
+      borderColor={'green.500'}
+      borderWidth={variant === 'outline' ? 1 : 0}
       rounded={'sm'}
       _pressed={{
-        bg: 'green.500',
+        bg: variant === 'outline' ? 'gray.500' : 'green.500',
       }}
     >
-      <Text color={'white'} fontFamily="heading" fontSize={'sm'}>
+      <Text
+        color={variant === 'outline' ? 'green.500' : 'white'}
+        fontFamily="heading"
+        fontSize={'sm'}
+      >
         {title}
       </Text>
     </Button>
