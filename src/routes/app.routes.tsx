@@ -7,6 +7,13 @@ import { Profile } from '@screens/Profile'
 import { Exercices } from '@screens/Exercices'
 import { History } from '@screens/History'
 
+import { Platform } from 'react-native'
+
+import HomeIcon from '@assets/home.svg'
+import HistoryIcon from '@assets/history.svg'
+import ProfileIcon from '@assets/profile.svg'
+import { useTheme } from 'native-base'
+
 type AppRoutes = {
   home: undefined
   exercice: undefined
@@ -20,12 +27,58 @@ const { Navigator, Screen } = createBottomTabNavigator<AppRoutes>()
 
 // eslint-disable-next-line no-redeclare
 export function AppRoutes() {
+  const { sizes, colors } = useTheme()
+  const iconSize = sizes[6]
   return (
-    <Navigator screenOptions={{ headerShown: false, tabBarShowLabel: false }}>
-      <Screen name="home" component={Home} />
-      <Screen name="history" component={History} />
-      <Screen name="profile" component={Profile} />
-      <Screen name="exercice" component={Exercices} />
+    <Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarActiveTintColor: colors.green[500],
+        tabBarInactiveTintColor: colors.gray[200],
+        tabBarStyle: {
+          backgroundColor: colors.gray[600],
+          borderTopWidth: 0,
+          height: Platform.OS === 'android' ? 'auto' : 96,
+          paddingBottom: sizes[10],
+          paddingTop: sizes[6],
+        },
+      }}
+    >
+      <Screen
+        name="home"
+        component={Home}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <HomeIcon fill={color} width={iconSize} height={iconSize} />
+          ),
+        }}
+      />
+      <Screen
+        name="history"
+        component={History}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <HistoryIcon fill={color} width={iconSize} height={iconSize} />
+          ),
+        }}
+      />
+      <Screen
+        name="profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <ProfileIcon fill={color} width={iconSize} height={iconSize} />
+          ),
+        }}
+      />
+      <Screen
+        name="exercice"
+        component={Exercices}
+        options={{
+          tabBarButton: () => null,
+        }}
+      />
     </Navigator>
   )
 }
