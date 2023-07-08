@@ -4,7 +4,7 @@ import {
 } from '@react-navigation/bottom-tabs'
 import { Home } from '@screens/Home'
 import { Profile } from '@screens/Profile'
-import { Exercices } from '@screens/Exercices'
+import { Exercises } from '@screens/Exercices'
 import { History } from '@screens/History'
 
 import { Platform } from 'react-native'
@@ -74,7 +74,7 @@ export function AppRoutes() {
       />
       <Screen
         name="exercice"
-        component={Exercices}
+        component={Exercises}
         options={{
           tabBarButton: () => null,
         }}
