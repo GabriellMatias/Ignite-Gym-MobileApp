@@ -6,6 +6,7 @@ import {
   Skeleton,
   Text,
   Heading,
+  useToast,
 } from 'native-base'
 import { ScreenHeader } from '../Components/ScreenHeader'
 import { UserAvatar } from '../Components/UserAvatar'
@@ -13,9 +14,59 @@ import React, { useState } from 'react'
 import { InputComponent } from '../Components/InputComponent'
 import { ButtonComponent } from '../Components/ButtonComponent'
 
+// profile image
+import * as ImagePicker from 'expo-image-picker'
+import * as FileSystem from 'expo-file-system'
+import { FileInfo } from 'expo-file-system'
+
 const PHOTO_SIZE = 33
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
+  const [userPhoto, setUserPhoto] = useState(
+    'https://github.com/gabriellmatias.png',
+  )
+  const { show } = useToast()
+
+  async function handleUserAvatarSelect() {
+    setPhotoIsLoading(true)
+    try {
+      // abre a galeria do usuario
+      const selectedPhoto = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      })
+      if (selectedPhoto.canceled) {
+        return
+      }
+      if (selectedPhoto.assets[0].uri) {
+        const photoInfo = (await FileSystem.getInfoAsync(
+          selectedPhoto.assets[0].uri,
+        )) as FileInfo
+        if (photoInfo.size && photoInfo.size / 1024 / 1024 > 5) {
+          return show({
+            title: 'Image out of size',
+            placement: 'top',
+            description: 'max file size is 5MB.',
+            bg: 'red.500',
+          })
+        }
+
+        setUserPhoto(selectedPhoto.assets[0].uri)
+        show({
+          title: 'Image changed successfully',
+          placement: 'top',
+          bg: 'green.500',
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setPhotoIsLoading(false)
+    }
+  }
+
   return (
     <VStack flex={1}>
       <ScreenHeader title="Profile" />
@@ -31,12 +82,12 @@ export function Profile() {
             />
           ) : (
             <UserAvatar
-              source={{ uri: 'https://github.com/gabriellmatias.png' }}
+              source={{ uri: userPhoto }}
               alt="Foto do usuário"
               size={PHOTO_SIZE}
             />
           )}
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserAvatarSelect}>
             <Text
               color="green.500"
               fontWeight="bold"
