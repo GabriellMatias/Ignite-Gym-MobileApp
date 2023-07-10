@@ -10,6 +10,8 @@ import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 export function SignIn() {
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>()
 
+  function handleSignIn() {}
+
   function handleNewAccount() {
     // TODO -> nao ta pegando a tipagem
     navigate('signUp')
@@ -41,7 +43,7 @@ export function SignIn() {
             autoCapitalize="none"
           />
           <InputComponent placeholder="Password" secureTextEntry />
-          <ButtonComponent title="Acess" />
+          <ButtonComponent title="Acess" onPress={handleSignIn} />
         </Center>
 
         <Center mt={24}>
