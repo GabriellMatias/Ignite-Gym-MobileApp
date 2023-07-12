@@ -6,11 +6,34 @@ import { ButtonComponent } from '../Components/ButtonComponent'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { useForm, Controller } from 'react-hook-form'
+
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+type SignInFormDataProps = {
+  password: string
+  email: string
+}
+
+const signUpSchema = yup.object({
+  password: yup.string().required('Inform the name'),
+  email: yup.string().required('Informa an email').email('E-mail inválido'),
+})
 
 export function SignIn() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInFormDataProps>({
+    resolver: yupResolver(signUpSchema),
+  })
   const { navigate } = useNavigation<AuthNavigatorRoutesProps>()
 
-  function handleSignIn() {}
+  function handleSignIn(data: SignInFormDataProps) {
+    console.log(data)
+  }
 
   function handleNewAccount() {
     // TODO -> nao ta pegando a tipagem
@@ -34,16 +57,42 @@ export function SignIn() {
         </Center>
         <Center>
           {' '}
-          <Heading color={'gray.100'} fontSize={'xl'} mb={6}>
+          <Heading
+            color={'gray.100'}
+            fontSize={'xl'}
+            mb={6}
+            fontFamily={'heading'}
+          >
             Acess your account
           </Heading>
-          <InputComponent
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, value } }) => (
+              <InputComponent
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.email?.message}
+              />
+            )}
           />
-          <InputComponent placeholder="Password" secureTextEntry />
-          <ButtonComponent title="Acess" onPress={handleSignIn} />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, value } }) => (
+              <InputComponent
+                placeholder="Password"
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.password?.message}
+              />
+            )}
+          />
+          <ButtonComponent title="Acess" onPress={handleSubmit(handleSignIn)} />
         </Center>
 
         <Center mt={24}>

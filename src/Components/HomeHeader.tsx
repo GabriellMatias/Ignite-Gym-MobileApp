@@ -15,7 +15,7 @@ export function HomeHeader() {
         <Text fontSize={'md'} color={'gray.100'}>
           Hellou
         </Text>
-        <Heading fontSize={'md'} color={'gray.100'}>
+        <Heading fontSize={'md'} color={'gray.100'} fontFamily={'heading'}>
           Matiaz
         </Heading>
       </VStack>

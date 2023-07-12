@@ -7,6 +7,9 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { useForm, Controller } from 'react-hook-form'
 
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 type FormDataProps = {
   name: string
   email: string
@@ -14,13 +17,28 @@ type FormDataProps = {
   confirm_password: string
 }
 
+const signUpSchema = yup.object({
+  name: yup.string().required('Inform the name'),
+  email: yup.string().required('Informa an email').email('E-mail inválido'),
+  password: yup
+    .string()
+    .required('Inform password')
+    .min(6, 'Password must be at least 6 digits'),
+  confirm_password: yup
+    .string()
+    .required('confirm your password')
+    .oneOf([yup.ref('password')], 'Passwords must match'),
+})
+
 export function SignUp() {
-  const { goBack } = useNavigation()
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataProps>()
+  } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema),
+  })
+  const { goBack } = useNavigation()
 
   function handleGoBack() {
     goBack()
@@ -46,14 +64,16 @@ export function SignUp() {
         </Center>
         <Center>
           {' '}
-          <Heading color={'gray.100'} fontSize={'xl'} mb={6}>
+          <Heading
+            color={'gray.100'}
+            fontSize={'xl'}
+            mb={6}
+            fontFamily={'heading'}
+          >
             Create your account
           </Heading>
           <Controller
             control={control}
-            rules={{
-              required: 'Please inform your name',
-            }}
             name="name"
             render={({ field: { onChange, value } }) => (
               <InputComponent
@@ -61,21 +81,13 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
-                isRequired
+                errorMessage={errors.name?.message}
               />
             )}
           />
-          {errors.name && <Text color={'white'}>This is required.</Text>}
           <Controller
             control={control}
             name="email"
-            rules={{
-              required: 'Inform your email',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'E-mail inválido',
-              },
-            }}
             render={({ field: { onChange, value } }) => (
               <InputComponent
                 placeholder="E-mail"
@@ -83,6 +95,7 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
@@ -95,6 +108,7 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.password?.message}
               />
             )}
           />
@@ -107,6 +121,7 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.confirm_password?.message}
               />
             )}
           />
